@@ -1,4 +1,5 @@
 import io
+import logging
 
 import urllib3.util
 import uvicorn
@@ -21,10 +22,9 @@ async def playwright_screenshot(url: str, width: int = 390, height: int = 844):
             await page.goto(str(urllib3.util.parse_url(url)))
             screenshot_bytes = await page.screenshot()
             res = StreamingResponse(content=io.BytesIO(screenshot_bytes), media_type="image/png")
-        except TimeoutError:
-            res = PlainTextResponse("请求超时", status_code=400)
-        except NameError:
-            res = PlainTextResponse("域名错误", status_code=400)
+        except Exception as e:
+            res = PlainTextResponse(f"请求错误", status_code=400)
+            logging.exception(e)
         finally:
             await page.close()
             await browser.close()
