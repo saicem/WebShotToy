@@ -13,10 +13,10 @@ app = FastAPI()
 async def playwright_screenshot(url: str, width: int = 390, height: int = 844):
     async with async_playwright() as p:
         browser = await p.chromium.launch()
-        page = await browser.new_page()
-        await page.set_viewport_size({'width': width, 'height': height})
+        ctx = await browser.new_context(ignore_https_errors=True, viewport={'width': width, 'height': height})
+        page = await ctx.new_page()
         try:
-            page.set_default_timeout(5000)
+            page.set_default_timeout(10000)
             await page.goto(str(urllib3.util.parse_url(url)))
             screenshot_bytes = await page.screenshot()
         except TimeoutError:
