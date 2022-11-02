@@ -6,10 +6,7 @@ WORKDIR /app
 
 COPY requirements.txt requirements.txt
 
-ARG PIP_REGISTRY
-
-RUN if [[ -n "${PIP_REGISTRY}" ]]; then pip config set global.index-url ${PIP_REGISTRY}; fi && \
-    pip install --upgrade pip && \
+RUN pip install --upgrade pip && \
     pip install --no-cache-dir --upgrade -r requirements.txt
 
 COPY . .
